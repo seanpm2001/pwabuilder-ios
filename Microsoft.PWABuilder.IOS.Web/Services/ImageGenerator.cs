@@ -93,13 +93,19 @@ namespace Microsoft.PWABuilder.IOS.Web.Services
                 if (source != null)
                 {
                     using var stream = await TryDownloadImage(source);
+                    logger.LogDebug("Downloaded image");
                     if (stream != null)
                     {
-                        var bytes = await TryReadStreamBytes(stream, $"{source}, {description}");
+                        var bytes = await TryReadStreamBytes(stream, $"{source}, {description}"); //todo : add error code
+                        logger.LogDebug("Read stream bytes");
                         if (bytes != null)
                         {
                             return bytes;
                         }
+                    }
+                    else
+                    {
+                        logger.LogDebug("Stream is null");
                     }
                 }
             }
@@ -116,7 +122,7 @@ namespace Microsoft.PWABuilder.IOS.Web.Services
             // - platform: ios
             // - colorChanged: if colorOption = "choose", this should be 1. Otherwise, omit.
             var fileContent = new StreamContent(new MemoryStream(image));
-            fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = "file", FileName = "image.png" };
+            fileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data") { Name = "file", FileName = "image.svg" };
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
             var imageGeneratorArgs = new MultipartFormDataContent
             {
